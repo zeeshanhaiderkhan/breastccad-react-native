@@ -3,24 +3,24 @@ import { View,Button,Image,Text, TouchableOpacity, TextInput,Alert} from 'react-
 import { WebView } from 'react-native-webview';
 
 import * as FileSystem from 'expo-file-system';
-import { useState } from 'react';
+import { useState,useContext } from 'react';
 import client from '../api/client';
 import mime from "mime";
 import * as Permissions from 'expo-permissions';
 import * as MediaLibrary from 'expo-media-library';
 import API_URL from '../config';
-
+import { UserContext } from '../navigation/PatientNav';
 
 export default function UploadReport({navigation}){
     const PdfReader = ({ url: uri }) => <WebView javaScriptEnabled={true} style={{ flex: 1 }} source={{ uri }} />
-
+    const user = useContext(UserContext);
     const[fileUri,setFileUri] = useState();
-
+    
     const uploadFile=()=>{
 
-        const pid = '628584ea2c684ed4cde9b135';
-        const did= '628584ea2c684ed4cde9b135';
-
+        const pid = user._id;
+        const did= user.assignedDoctor;
+        
 
         const newImageUri =  "file:///" + fileUri.split("file:/").join("");
         console.log(newImageUri);
@@ -32,7 +32,7 @@ export default function UploadReport({navigation}){
         });
            
         formData.append('title',title)
-        formData.append('uploadedBy',did);
+        formData.append('uploadedBy',user._id);
 
         var requestOptions={
             method:'post',

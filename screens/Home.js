@@ -1,8 +1,8 @@
-import {View,Text,ScrollView} from 'react-native';
+import {View,Text,ScrollView,TouchableOpacity} from 'react-native';
 import styles from '../styles';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState,useEffect } from 'react';
@@ -11,11 +11,13 @@ import { useState,useEffect } from 'react';
 export default function Home({navigation}){
     const [name,setName] = useState('');
     const [role,setRole] = useState('');
+    const [did,setDid] = useState('');
     const setDetails=()=>{
         AsyncStorage.getItem('@user').then((user)=>{
             if(user != null){
-                setName(JSON.parse(user).name)
-                setRole(JSON.parse(user).role)
+                setName(JSON.parse(user).name);
+                setRole(JSON.parse(user).role);
+                setDid(JSON.parse(user).assignedDoctor);
             }
         })
     }
@@ -40,13 +42,13 @@ export default function Home({navigation}){
                     
                     <View style={{flexDirection:'row', justifyContent:'space-around'}}>
                     <View style={{width:'45%'}}>
-                        <TouchableOpacity style={{backgroundColor:'#f2333f', alignItems:'center',padding:'7%',marginTop:'10%', borderRadius:25}}>
+                        <TouchableOpacity style={{backgroundColor:'#f2333f', alignItems:'center',padding:'7%',marginTop:'10%', borderRadius:25}} onPress={()=>{navigation.push('YourDoctor',{did})}}>
                             <Fontisto name='doctor' size={50} color={'white'}/>
                             <Text style={{fontSize:25,color:'white'}}>Your Doctor</Text>
                         </TouchableOpacity>
                         </View>
                         <View style={{width:'45%'}}>
-                        <TouchableOpacity style={{backgroundColor:'#f2333f', alignItems:'center',padding:'7%',marginTop:'10%', borderRadius:25}} onPress={()=>{navigation.push('BookedAppointments');}}>
+                        <TouchableOpacity style={{backgroundColor:'#f2333f', alignItems:'center',padding:'7%',marginTop:'10%', borderRadius:25}} onPress={()=>{navigation.push('Prescription');}}>
                             <MaterialIcons name='schedule' size={50} color={'white'} />
                             <Text style={{fontSize:22,color:'white'}}>Prescription</Text>
                         </TouchableOpacity>

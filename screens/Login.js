@@ -36,8 +36,8 @@ export default function LogIn({navigation}){
               password:password,
             })};   
          
-            console.log(requestOptions);
-            fetch("http://192.168.100.12:3001/api"+'/accounts/auth',requestOptions)
+            console.log(requestOptions);//change api here
+            fetch("http://192.168.43.131:3000/api"+'/accounts/auth',requestOptions)
             .then((response)=>{
               if(response.status == '304'){
                 Alert.alert("Seems like there is an error. Kindly Try Again Later!");
@@ -53,7 +53,24 @@ export default function LogIn({navigation}){
                 var user_data = JSON.stringify(result.data);
                 console.log(user_data);
                 AsyncStorage.setItem('@user',user_data).then(()=>{
-                  navigation.navigate('PatientHome');
+                  if(result.data.role=='patient'){
+                    navigation.navigate('PatientHome');
+                    navigation.reset({
+                      index: 0,
+                      routes: [{ name: 'PatientHome' }],
+                    });
+                  }
+                  else if(result.data.role=='doctor'){
+                    navigation.navigate('DoctorHome');
+                    navigation.reset({
+                      index: 0,
+                      routes: [{ name: 'DoctorHome' }],
+                    });
+                  }
+                  else {
+                    console.log("This user maybe admin");
+                  }
+                 
                 })
                 
               }

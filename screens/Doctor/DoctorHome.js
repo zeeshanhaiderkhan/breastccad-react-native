@@ -1,8 +1,7 @@
-import {View,Text} from 'react-native';
+import {View,Text, TouchableOpacity,Linking} from 'react-native';
 //import styles from '../../styles';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState,useEffect } from 'react';
@@ -18,6 +17,7 @@ export default function DoctorHome({navigation}){
             }
         })
     }
+    
     useEffect(()=>{
         setDetails();
     },[])
@@ -35,7 +35,7 @@ export default function DoctorHome({navigation}){
                     
                     <View style={{flexDirection:'row', justifyContent:'space-around'}}>
                     <View style={{width:'45%'}}>
-                        <TouchableOpacity style={{backgroundColor:'#e67e7e', alignItems:'center',padding:'7%',marginTop:'10%', borderRadius:25}}>
+                        <TouchableOpacity style={{backgroundColor:'#e67e7e', alignItems:'center',padding:'7%',marginTop:'10%', borderRadius:25}} onPress={ ()=>{ Linking.openURL('https://google.com')}}>
                             <Fontisto name='doctor' size={50} color={'white'}/>
                             <Text style={{fontSize:25,color:'white'}}>Patients</Text>
                         </TouchableOpacity>

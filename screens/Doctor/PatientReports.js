@@ -1,14 +1,14 @@
 import {View,Text, FlatList,ScrollView,TouchableOpacity,Alert, RefreshControl} from "react-native";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { useState,useEffect,useContext} from "react";
-import API_URL from '../config';
+import API_URL from '../../config';
 import ActionButton from 'react-native-action-button';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { UserContext } from '../navigation/PatientNav';
+import { UserContext } from '../../navigation/PatientNav';
 // <MaterialIcons style={{alignSelf:'center'}} name='pending-actions' size={25} color='white' /></View><View>
              
-export default function ViewReports({route, navigation}){
+export default function PatientReports({route, navigation}){
     const [refreshing, setRefreshing] = useState(false);
     const[reports,setReports] = useState([])
     const user = useContext(UserContext);
@@ -16,7 +16,7 @@ export default function ViewReports({route, navigation}){
     const getReports=()=>{
         setRefreshing(true);
 
-        const pid =user._id;
+        const pid =route.params.pid;
         //get('/all/:pid',
         var requestOptions= {
             method:'GET',
@@ -70,14 +70,7 @@ export default function ViewReports({route, navigation}){
           onRefresh={()=>{getReports()}}
         />
       }>
-        <View style={{ backgroundColor:'#f2333f', padding:'5%',paddingTop:'10%',marginBottom:'5%', justifyContent:'space-between'}}>
-                
-                <View style={{alignItems:'center'}} >
-                    <Text style={{alignSelf:'center', color:'white', fontSize:18, fontWeight:'bold'}}>Reports</Text>
-                </View>
-                
 
-        </View>
 
         <View style={{marginTop:'2%', alignItems:'center'}}>
             
@@ -88,7 +81,7 @@ export default function ViewReports({route, navigation}){
             { reports.length>0 ?
             <FlatList  style={{borderTopWidth:2}} data={reports} 
             renderItem={({item})=>
-                <TouchableOpacity onPress={()=>{navigation.navigate('Report',{item})}} onLongPress={()=>{deleteReport(item._id,item.title)}} style={{alignItems:'center', backgroundColor:'red', padding:'5%', margin:'2%',paddingLeft:'20%',paddingRight:'20%',}}>
+                <TouchableOpacity onPress={()=>{navigation.navigate('ViewPatientReport',{item,name:item.title.substring(0,10)})}} onLongPress={()=>{deleteReport(item._id,item.title)}} style={{alignItems:'center', backgroundColor:'red', padding:'5%', margin:'2%',paddingLeft:'20%',paddingRight:'20%',}}>
                 <View><MaterialIcons style={{alignSelf:'center'}} name='assignment' size={25} color='white' /></View>
                 <View><Text style={{color:'white',fontSize:12}}>Report</Text></View>
                 <View><Text style={{color:'white',fontSize:18,fontWeight:'bold'}}>{item.title.substring(0,10)}{item.title.length>10?"...":""}</Text></View>

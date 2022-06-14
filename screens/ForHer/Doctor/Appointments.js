@@ -11,10 +11,10 @@ router.put('/cancel/:aid',cancel_appointment);
 import { View, ScrollView,Text,TouchableOpacity,FlatList,Alert, RefreshControl } from "react-native";
 import {useState, useEffect,useContext} from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import API_URL from "../config";
-import { UserContext } from '../navigation/PatientNav';
+import API_URL from "../../config";
+import { UserContext } from '../../navigation/PatientNav';
 
-export default function BookedAppointments({navigation}){
+export default function Appointments({navigation}){
     const [timeSlots,setTimeSlots] = useState([])
    const[refreshing,setRefreshing] = useState(false);
     const user = useContext(UserContext);
@@ -29,8 +29,10 @@ export default function BookedAppointments({navigation}){
               'Content-Type': 'application/json'
             },
         }
-        const pid=user._id;
-        fetch(API_URL+'/appointment/getByPid/'+pid,requestOptions).then((response)=>response.json()).then((result)=>{console.log(result);setTimeSlots(result.reverse());setRefreshing(false);}).catch((error)=>console.log('error',error));
+        const did=user._id;
+
+        //router.get('/getBookedByDid/:did',get_appointments_booked_by_did)//ther if app are done why showing
+        fetch(API_URL+'/appointment/getBookedByDid/'+did,requestOptions).then((response)=>response.json()).then((result)=>{console.log(result);setTimeSlots(result);setRefreshing(false);}).catch((error)=>{console.log('error',error);setRefreshing(false);});
            
         }
         useEffect(()=>{
@@ -85,12 +87,6 @@ export default function BookedAppointments({navigation}){
                 
 
         </View>
-
-             <TouchableOpacity style={{alignItems:'center', backgroundColor:'red', width:'60%', alignSelf:'center',padding:'5%'}} onPress={()=>{navigation.push('BookAppointment',{pid:user._id});}}>
-         <View>
-         
-           <Text style={{color:'white', fontSize:18}}>Book Appointment</Text></View>
-       </TouchableOpacity>
         
         {
             !timeSlots.length && <Text style={{color:'red', fontSize:28,backgroundColor:'yellow',padding:'5%', marginTop:'10%',alignSelf:'center'}}>No Bookings Yet!</Text>
@@ -103,10 +99,14 @@ export default function BookedAppointments({navigation}){
           
           <TouchableOpacity onLongPress={()=>{
             cancelAppointment(item._id);
-          }} disabled={!dateDone(item.date)} style={{backgroundColor:dateDone(item.date)?'red':'blue', borderRadius:0, alignItems:'center', padding:'3%', width:'80%'}}>
+          }} disabled={!dateDone(item.date)} style={{backgroundColor:dateDone(item.date)? '#f2333f':'blue', borderRadius:0, alignItems:'center', padding:'3%', width:'80%',shadowColor: '#f5553f',
+          shadowOffset: { height: 2, width: 2 }, elevation:5,
+          shadowOpacity: 0.3, 
+          shadowRadius: 0.5, }}>
               
               <Text style={{fontSize:12, color:'white'}}>{item.date.substring(0,10)}</Text>
               <Text style={{fontSize:24, color:'white'}}>{item.startTime}</Text>
+              <Text style={{fontSize:14, color:'white'}}>{item.bookedBy.name}</Text>
               {
                   dateDone(item.date) && <View ><View>
                   <MaterialIcons style={{alignSelf:'center'}} name='pending-actions' size={25} color='white' /></View><View>
